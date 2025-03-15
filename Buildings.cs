@@ -2,82 +2,78 @@ namespace Polis
 {
     class BuildingFactory
     {
+        private City city;
+        private Building stoa;
+        private Building military_academy;
+        private Building sheep_farm;
+        private Building brewery;
+
+        BuildingFactory(City _city)
+        {
+            city = _city;
+            stoa = new Building("Stoa", 100, stoaProcess);
+            military_academy = new Building("Military Academy", 100, militaryProcess);
+            sheep_farm = new Building("Sheep Farm", 100, sheepProcess);
+            brewery = new Building("Brewery", 100, breweryProcess);
+        }
+
+        private void stoaProcess()
+        {
+
+        }
+
+        private void militaryProcess()
+        {
+
+        }
+
+        private void sheepProcess()
+        {
+
+        }
+
+        private void breweryProcess()
+        {
+
+        }
+        
         public Building getNewBuilding(String building)
         {
             switch(building.ToLower())
             {
                 case "stoa":
-                    return new Stoa();
+                    return stoa.clone();
                 case "milacademy":
-                    return new MilitaryAcademy();
+                    return military_academy.clone();
                 case "sheep":
-                    return new SheepFarm();
+                    return sheep_farm.clone();
                 case "brewery":
-                    return new Brewery();
+                    return brewery.clone();
                 default:
                     return null; // ill just check errors later
             }
         }
     }
 
-    abstract class Building
+    class Building
     {
-        String name;
-        int price;
-        City city;
-        public abstract void process();
-        public abstract void removeBuilding();
-    }
+        private String name;
+        private int price;
 
-    class Stoa: Building
-    {
-        public override void process()
+        public Building(String _name, int _price, Action _process)
         {
-
+            name = _name;
+            price = _price;
+            process = _process;
         }
 
-        public override void removeBuilding()
+        public String getName() { return name; }
+        public int getPrice() { return price; }
+
+        public Action process;
+        public Building clone()
         {
-
-        }
-    }
-
-    class MilitaryAcademy: Building
-    {
-        public override void process()
-        {
-
-        }
-
-        public override void removeBuilding()
-        {
-
-        }
-    }
-
-    class SheepFarm: Building
-    {
-        public override void process()
-        {
-
-        }
-
-        public override void removeBuilding()
-        {
-
-        }
-    }
-
-    class Brewery: Building
-    {
-        public override void process()
-        {
-
-        }
-
-        public override void removeBuilding()
-        {
-
+            return new Building(name, price, process);
         }
     }
 }
