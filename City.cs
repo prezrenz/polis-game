@@ -1,6 +1,6 @@
 namespace Polis
 {
-    class City
+    public class City
     {
         private String king_name;
         private String city_name;
@@ -27,7 +27,7 @@ namespace Polis
         private bool lose; // why seperate? i forgot
         private bool gameEnd;
 
-        City(String _king_name, String _city_name)
+        public City(String _king_name, String _city_name)
         {
             king_name = _king_name;
             city_name = _city_name;
@@ -54,6 +54,16 @@ namespace Polis
             win = false;
             lose = false;
             gameEnd = false;
+        }
+
+        public void displayState()
+        {
+            Console.WriteLine();
+            Console.WriteLine("King Name: " + king_name + "\t" + "| Polis Name: " + city_name + "\t" + "| Current Year: " + current_year + "\t" + " A.D.");
+            Console.WriteLine("Population: " + population + "\t" + "| Grains: " + grain);
+            Console.WriteLine("Gold: " + gold + "\t" + "| Land Level" + land_level);
+            Console.WriteLine("Soldiers: " + soldiers + "\t" + "| Training Level: " + training_level);
+            Console.WriteLine("Years before next Invasion: " + invasion_counter);
         }
 
         public void processTurn()
