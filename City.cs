@@ -50,6 +50,8 @@ namespace Polis
             max_buildings = 4; // should be const?
             citizen = new List<Citizen>();
             max_citizen = 10;
+
+            citizen.Add(new Leader(this, king_name));
             
             win = false;
             lose = false;
@@ -61,29 +63,141 @@ namespace Polis
             Console.WriteLine();
             Console.WriteLine("King Name: " + king_name + "\t" + "| Polis Name: " + city_name + "\t" + "| Current Year: " + current_year + "\t" + " A.D.");
             Console.WriteLine("Population: " + population + "\t" + "| Grains: " + grain);
-            Console.WriteLine("Gold: " + gold + "\t" + "| Land Level" + land_level);
+            Console.WriteLine("Gold: " + gold + "\t" + "| Land Level: " + land_level);
             Console.WriteLine("Soldiers: " + soldiers + "\t" + "| Training Level: " + training_level);
             Console.WriteLine("Years before next Invasion: " + invasion_counter);
         }
 
-        public void processTurn()
+        public void displayCitizens()
+        {
+            Console.WriteLine();
+            Console.WriteLine("{0,-10} {1, -20} {2, -16} {3, -6} {4, -6}",
+                                "Choice", "Name", "Role", "Skill", "Has Acted");
+            
+            for(int i = 0; i < citizen.Count(); i++)
+            {
+                Console.WriteLine("{0,-10} {1, -20} {2, -16} {3, -6} {4, -6}",
+                                    i+1, citizen[i].getName(), citizen[i].getRole(),
+                                    citizen[i].getSkill(), citizen[i].isTired());
+            }
+
+            Console.WriteLine();
+        }
+
+        public int processTurn() // baaaaaaad, fix this
+        { 
+            Console.WriteLine("Enter 0 to end your turn.");
+            Console.Write("Who shall act next? [1-" + citizen.Count() + "] ");
+
+            try
+            {
+                
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice ==  0)
+                {
+                    return 0;
+                }
+
+                if(citizen[choice-1].isTired())
+                {
+                    Console.WriteLine("That citizen has already acted this turn, please choose a different citizen to act.");
+                    return choice;
+                }
+
+                Console.Write("Will " + citizen[choice-1].getName() + " " + citizen[choice-1].getAction() + "? [1-yes, 0-no]"); 
+                
+                choice = Convert.ToInt32(Console.ReadLine());
+                if(choice == 0)
+                {
+                    return 1;
+                }
+                else if(choice != 1)
+                {
+                    throw new Exception("Invalid input, please try again.");
+                }
+
+                citizen[choice-1].processCommand();
+                citizen[choice-1].setTired(true);
+
+                return choice;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 1;
+            }
+
+        }
+
+        public void updateState()
+        {
+            current_year += 1;
+            invasion_counter -= 1;
+            training_level -= 1;
+            processInvasion();
+            processBuildings();
+            gainResources();
+        }
+        
+        private void processInvasion()
         {
 
         }
 
-        public void increasePopulation()
+        private void processBuildings()
         {
-
+            if(buildings.Count() != 0)
+            {
+                foreach(Building i in buildings)
+                {
+                    i.process();
+                }
+            }
         }
 
-        public void increaseFood()
+        private void processUpkeep()
         {
-
+            if(citizen.Count() != 0) // should be impossible but you never know
+            {
+                foreach(Citizen i in citizen)
+                {
+                    i.upkeep();
+                    i.setTired(false);
+                }
+            }
         }
 
-        public void increaseGold()
+        private void gainResources()
         {
+            if(grain >= population * 2)
+            { 
+                population += land_level * 2;
+                Console.WriteLine("You gained " + (land_level * 2) + " population this turn.");
+            }
 
+            if(grain <= 0)
+            {
+                int loss = (int)((float)population * 0.10f);
+                if(loss <= 0) loss = 1;
+                population -= loss;
+                Console.WriteLine("You lose " + loss + " population this turn.");
+            }
+
+            grain += (land_level * 4) - (population/2) - (soldiers);
+            Console.WriteLine("You gained " + ((land_level * 4) - (population/2) - (soldiers)) + " grain this turn.");
+
+            if(grain < 0) grain = 0;
+
+            gold += (population/4) - (soldiers/2);
+            Console.WriteLine("You gained " + ((population/4) - (soldiers/2)) + " gold this turn.");
+
+            if(gold < 0) gold = 0;
+        }
+
+        public void increaseGold(int amount)
+        {
+            gold += amount;
         }
 
         public void increaseLandLevel()
@@ -96,14 +210,25 @@ namespace Polis
 
         }
 
-        public void addOfficer()
+        public void addCitizen(String type)
         {
-
-        }
-
-        public void processInvasion() // could be private
-        {
-
+            switch(type)
+            {
+                case "Commander":
+                     citizen.Add(new Commander(this));
+                     break;
+                case "Farmer":
+                     citizen.Add(new Farmer(this));
+                     break;
+                case "Developer":
+                     citizen.Add(new Developer(this));
+                     break;
+                case "Merchant":
+                     citizen.Add(new Merchant(this));
+                     break;
+                default:
+                    break; // should not be reachable, if it did its your fault
+            }
         }
 
         public bool isWin() { return win; }
@@ -112,7 +237,16 @@ namespace Polis
 
         public void checkWinOrLoss()
         {
-
+            if(population <= 0)
+            {
+                lose = true;
+                gameEnd = true;
+            }
+            else if(population >= 1000)
+            {
+                win = true;
+                gameEnd = true;
+            }
         }
     }
 }

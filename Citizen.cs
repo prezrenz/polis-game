@@ -1,15 +1,19 @@
 namespace Polis
 {
-    class Citizen
+    public class Citizen
     {
         private String name;
+        private String role;
+        private String actionText;
         private bool tired;
         private int skill;
-        private City city;
+        public City city;
         public Random randomGenerator;
 
         static readonly String[] GREEK_NAMES = {
             "Odysseus",
+            "Polites",
+            "Eurylochus",
             "Telemachus",
             "Agammemnon",
             "Menaleus",
@@ -23,27 +27,41 @@ namespace Polis
             "Aias",
         };
 
-        public Citizen(City _city)
+        public Citizen(City _city, String _role, String _actionText)
         {
             randomGenerator = new Random();
             name = generateName();
-            int skill = generateSkill();
+            skill = generateSkill();
             tired = false;
             city = _city;
+            role = _role;
+            actionText = _actionText;
         }
         
-        public Citizen(City _city, String _name)
+        public Citizen(City _city, String _name, String _role, String _actionText)
         {
             randomGenerator = new Random();
             name = _name;
-            int skill = generateSkill();
+            skill = generateSkill();
             tired = false;
             city = _city;
+            role = _role;
+            actionText = _actionText;
         }
 
         public String getName()
         {
             return name;
+        }
+
+        public String getRole()
+        {
+            return role;
+        }
+
+        public String getAction()
+        {
+            return actionText;
         }
 
         public bool isTired()
@@ -56,12 +74,17 @@ namespace Polis
             return skill;
         }
 
-        public void processCommand()
+        public void setTired(bool b)
+        {
+            tired = b;
+        }
+
+        public virtual void processCommand()
         {
 
         }
 
-        public void upkeep()
+        public virtual void upkeep()
         {
 
         }
@@ -77,39 +100,63 @@ namespace Polis
         }
     }
 
-    class Leader: Citizen
+    public class Leader: Citizen
     {
-        Leader(City _city) : base(_city) { }
-        Leader(City _city, String _name) : base(_city, _name) { }
+        public Leader(City _city) : base(_city, "Leader", "hire or dismiss citizens") { }
+        public Leader(City _city, String _name) : base(_city, _name, "Leader", "hire or dismiss citizens") { }
+
+        public override void upkeep()
+        {
+            city.increaseGold(0);
+        }
     }
 
-    class Commander: Citizen
+    public class Commander: Citizen
     {
         private int charisma;
-        Commander(City _city) : base(_city) { charisma = generateCharisma(); }
+        public Commander(City _city) : base(_city, "Commander", "hire or train soldiers") { charisma = generateCharisma(); }
 
         public int generateCharisma()
         {
             return randomGenerator.Next(30, 100);
         }
 
-    }
-
-    class Farmer: Citizen
-    {
-       Farmer(City _city) : base(_city) { } 
-
-    }
-
-    class Developer: Citizen
-    {
-        Developer(City _city) : base(_city) { }
+        public override void upkeep()
+        {
+            city.increaseGold(-100);
+        }
 
     }
 
-    class Merchant: Citizen
+    public class Farmer: Citizen
     {
-        Merchant(City _city) : base(_city) { }
+       public Farmer(City _city) : base(_city, "Farmer", "develop land") { } 
+
+       public override void upkeep()
+       {
+           city.increaseGold(-20);
+       }
+
+    }
+
+    public class Developer: Citizen
+    {
+        public Developer(City _city) : base(_city, "Urban Developer", "build") { }
+
+        public override void upkeep()
+        {
+            city.increaseGold(-50);
+        }
+    }
+
+    public class Merchant: Citizen
+    {
+        public Merchant(City _city) : base(_city, "Merchant", "trade") { }
+
+        public override void upkeep()
+        {
+            city.increaseGold(-50);
+        }
 
     }
 }
