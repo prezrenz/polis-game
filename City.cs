@@ -168,7 +168,9 @@ namespace Polis
             {
                 foreach(Citizen i in citizen)
                 {
-                    i.upkeep();
+                    // do i really need upkeep? seems like extra expense
+                    // also, it doesnt show in the gains summary
+                    // i.upkeep();
                     i.setTired(false);
                 }
             }
@@ -176,7 +178,7 @@ namespace Polis
 
         private void gainResources()
         {
-            if(grain >= population * 2)
+            if(grain >= population * 1.5)
             { 
                 population += land_level * 2;
                 Console.WriteLine("You gained " + (land_level * 2) + " population this turn.");
@@ -195,8 +197,8 @@ namespace Polis
 
             if(grain < 0) grain = 0;
 
-            gold += (population/2) - (soldiers*2);
-            Console.WriteLine("You gained " + ((population/2) - (soldiers*2)) + " gold this turn.");
+            gold += (population/4) - (soldiers+(training_level/2)+1);
+            Console.WriteLine("You gained " + ((population/2) - (soldiers+(training_level/2)+1)) + " gold this turn.");
 
             if(gold < 0) gold = 0;
         }
@@ -243,9 +245,10 @@ namespace Polis
             return soldiers;
         }
 
-        public void increaseLandLevel()
+        public void increaseLandLevel(int amount)
         {
-
+            land_level += amount;
+            Console.WriteLine("You increased your land level by " + amount + ".");
         }
 
         public void addBuilding()

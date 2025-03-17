@@ -252,7 +252,15 @@ namespace Polis
 
     public class Farmer: Citizen
     {
-       public Farmer(City _city) : base(_city, "Farmer", "develop land") { } 
+       private int developPrice = 50;
+       public Farmer(City _city) : base(_city, "Farmer", "develop land for 50 gold") { }
+
+       public override int processCommand()
+       {
+           city.increaseLandLevel(randomGenerator.Next(10, getSkill()));
+           city.increaseGold(-developPrice);
+           return 1;
+       } 
 
        public override void upkeep()
        {
