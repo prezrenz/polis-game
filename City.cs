@@ -86,6 +86,7 @@ namespace Polis
 
         public int processTurn() // baaaaaaad, fix this
         { 
+            Console.WriteLine("Press Control + C to exit.");
             Console.WriteLine("Enter 0 to end your turn.");
             Console.Write("Who shall act next? [1-" + citizen.Count() + "] ");
 
@@ -105,14 +106,14 @@ namespace Polis
                     return choice;
                 }
 
-                Console.Write("Will " + citizen[choice-1].getName() + " " + citizen[choice-1].getAction() + "? [1-yes, 0-no]"); 
+                Console.Write("Will " + citizen[choice-1].getName() + " " + citizen[choice-1].getAction() + "? [1-yes, 0-no] "); 
                 
-                choice = Convert.ToInt32(Console.ReadLine());
-                if(choice == 0)
+                int confirm = Convert.ToInt32(Console.ReadLine());
+                if(confirm == 0)
                 {
                     return 1;
                 }
-                else if(choice != 1)
+                else if(confirm != 1)
                 {
                     throw new Exception("Invalid input, please try again.");
                 }
@@ -138,6 +139,7 @@ namespace Polis
             if(training_level <= 0) training_level = 0;
             processInvasion();
             processBuildings();
+            processUpkeep();
             gainResources();
         }
         

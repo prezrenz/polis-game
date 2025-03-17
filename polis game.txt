@@ -101,7 +101,6 @@ GAME LOOP:
 		- PROCESS OFFICER COMMAND
 
 TODO:
-- fix no one else gets tired after 1 citizen gets tired
 - implement invasions and battle
 - implement leader commands
 - implement commander commands
