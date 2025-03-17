@@ -120,8 +120,9 @@ namespace Polis
                     throw new Exception("Invalid input, please try again.");
                 }
 
-                citizen[choice-1].processCommand();
-                citizen[choice-1].setTired(true);
+                int result = citizen[choice-1].processCommand();
+
+                if(result != 0) citizen[choice-1].setTired(true);
 
                 return choice;
             }
@@ -208,6 +209,38 @@ namespace Polis
         public int getGold()
         {
             return gold;
+        }
+
+        public void increaseGrain(int amount)
+        {
+            grain += amount;
+        }
+
+        public int getGrain()
+        {
+            return grain;
+        }
+
+        public void increaseTraining(int amount)
+        {
+            training_level += amount;
+            Console.WriteLine("Your training level increased by " + amount);
+        }
+
+        public int getTrainingLevel()
+        {
+            return training_level;
+        }
+
+        public void increaseSoldiers(int amount)
+        {
+            soldiers += amount;
+            Console.WriteLine("You managed to draft " + amount + " soldiers.");
+        }
+
+        public int getSoldiers()
+        {
+            return soldiers;
         }
 
         public void increaseLandLevel()

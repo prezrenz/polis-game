@@ -171,6 +171,8 @@ namespace Polis
                     return 0;
             }
 
+            city.increaseGold(-100);
+
             return 1;
         }
 
@@ -188,11 +190,57 @@ namespace Polis
     public class Commander: Citizen
     {
         private int charisma;
+        private int draftCost = 100;
         public Commander(City _city) : base(_city, "Commander", "hire or train soldiers") { charisma = generateCharisma(); }
 
         public int generateCharisma()
         {
             return randomGenerator.Next(30, 100);
+        }
+
+        public override int processCommand()
+        {                
+            int choice;
+
+            Console.WriteLine("Press 1 to draft 50 to " + charisma + " soldiers for 100 gold.");
+            Console.WriteLine("Press 2 to increase your training level.");
+            Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
+
+            try
+            { 
+                choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice == 1)
+                {
+                    return draft();
+                }
+                else if(choice == 2)
+                {
+                    return train();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 0;
+            }
+        }
+        
+        private int draft()
+        {
+            city.increaseSoldiers(randomGenerator.Next(10, this.charisma)+50);
+            city.increaseGold(-draftCost);
+            return 1;
+        }
+
+        private int train()
+        {
+            city.increaseTraining(randomGenerator.Next(10, this.getSkill()));
+            return 1;
         }
 
         public override void upkeep()
