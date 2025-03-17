@@ -101,7 +101,6 @@ GAME LOOP:
 		- PROCESS OFFICER COMMAND
 
 TODO:
-- fix training level should not go below 0
 - fix no one else gets tired after 1 citizen gets tired
 - implement invasions and battle
 - implement leader commands

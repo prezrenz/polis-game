@@ -133,8 +133,9 @@ namespace Polis
         public void updateState()
         {
             current_year += 1;
-            invasion_counter -= 1;
+            invasion_counter -= 1; // the processInvasion will reset this counter
             training_level -= 1;
+            if(training_level <= 0) training_level = 0;
             processInvasion();
             processBuildings();
             gainResources();
