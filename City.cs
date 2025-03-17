@@ -26,6 +26,7 @@ namespace Polis
         private bool win;
         private bool lose; // why seperate? i forgot
         private bool gameEnd;
+        private int requiredPop;
 
         public City(String _king_name, String _city_name)
         {
@@ -34,9 +35,9 @@ namespace Polis
 
             // initial city parameters
             current_year = 0;
-            population = 100;
-            grain = 50;
-            gold = 100;
+            population = 1000;
+            grain = 500;
+            gold = 1000;
             land_level = 10;
             soldiers = 100;
             training_level = 10;
@@ -56,6 +57,7 @@ namespace Polis
             win = false;
             lose = false;
             gameEnd = false;
+            requiredPop = 10000;
         }
 
         public void displayState()
@@ -182,7 +184,7 @@ namespace Polis
             if(grain <= 0)
             {
                 int loss = (int)((float)population * 0.10f);
-                if(loss <= 0) loss = 1;
+                if(loss <= 0) loss = 10;
                 population -= loss;
                 Console.WriteLine("You lose " + loss + " population this turn.");
             }
@@ -192,8 +194,8 @@ namespace Polis
 
             if(grain < 0) grain = 0;
 
-            gold += (population/4) - (soldiers/2);
-            Console.WriteLine("You gained " + ((population/4) - (soldiers/2)) + " gold this turn.");
+            gold += (population/2) - (soldiers*2);
+            Console.WriteLine("You gained " + ((population/2) - (soldiers*2)) + " gold this turn.");
 
             if(gold < 0) gold = 0;
         }
@@ -201,6 +203,11 @@ namespace Polis
         public void increaseGold(int amount)
         {
             gold += amount;
+        }
+
+        public int getGold()
+        {
+            return gold;
         }
 
         public void increaseLandLevel()
@@ -233,6 +240,56 @@ namespace Polis
                     break; // should not be reachable, if it did its your fault
             }
         }
+        
+        public int removeCitizen() // lots of repetition from processTurn BAAAAAAAAAAD
+        {
+            displayCitizens();
+            Console.WriteLine("Enter 0 to cancel.");
+            Console.Write("Who will you remove? [1-" + citizen.Count() + "] ");
+
+            try
+            {   
+                int choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice ==  0)
+                {
+                    return 0;
+                }
+
+                if(choice == 1)
+                {
+                    Console.WriteLine("You can't remove yourself.");
+                    return 0;
+                }
+
+                Console.Write("Will you remove " + citizen[choice-1].getName() + "? [1-yes, 0-no] "); 
+                
+                int confirm = Convert.ToInt32(Console.ReadLine());
+                if(confirm == 0)
+                {
+                    return 0;
+                }
+                else if(confirm != 1)
+                {
+                    throw new Exception("Invalid input, please try again.");
+                }
+
+                citizen.RemoveAt(choice-1);
+
+                return 1;
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 0;
+            }
+
+        }
+
+        public bool isAtMaxCitizen()
+        {
+            return citizen.Count() >= max_citizen;
+        }
 
         public bool isWin() { return win; }
         public bool isLose() { return lose; }
@@ -245,7 +302,7 @@ namespace Polis
                 lose = true;
                 gameEnd = true;
             }
-            else if(population >= 1000)
+            else if(population >= requiredPop)
             {
                 win = true;
                 gameEnd = true;

@@ -101,8 +101,8 @@ GAME LOOP:
 		- PROCESS OFFICER COMMAND
 
 TODO:
+- REFACTOR CODE BAD BAD BAD REPITITION AND SCATTERED AAAAAAAA PAIN
 - implement invasions and battle
-- implement leader commands
 - implement commander commands
 - implement farmer command
 - implement developer command

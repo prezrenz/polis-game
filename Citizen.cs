@@ -79,9 +79,9 @@ namespace Polis
             tired = b;
         }
 
-        public virtual void processCommand()
+        public virtual int processCommand()
         {
-
+            return 0; // should be fine, it'll use the overriden method anyway... should
         }
 
         public virtual void upkeep()
@@ -104,6 +104,80 @@ namespace Polis
     {
         public Leader(City _city) : base(_city, "Leader", "hire or dismiss citizens") { }
         public Leader(City _city, String _name) : base(_city, _name, "Leader", "hire or dismiss citizens") { }
+
+        public override int processCommand()
+        {
+            int choice;
+
+            Console.WriteLine("Press 1 to hire a new citizen for 100 gold.");
+            Console.WriteLine("Press 2 to dismiss a citizen.");
+            Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
+
+            try
+            { 
+                choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice == 1)
+                {
+                    return hire();
+                }
+                else if(choice == 2)
+                {
+                    return dismiss();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 0;
+            }
+        }
+
+        private int hire()
+        {
+            int hireNumber = randomGenerator.Next(1, 4);
+
+            if(city.getGold() < 100)
+            {
+                Console.WriteLine("Not enough to hire another citizen.");
+                return 0;
+            }
+
+            if(city.isAtMaxCitizen())
+            {
+                Console.WriteLine("You already have too many citizens!");
+                return 0;
+            }
+
+            switch(hireNumber)
+            {
+                case 1:
+                    city.addCitizen("Commander");
+                    break;
+                case 2:
+                    city.addCitizen("Farmer");
+                    break;
+                case 3:
+                    city.addCitizen("Developer");
+                    break;
+                case 4:
+                    city.addCitizen("Merchant");
+                    break;
+                default:
+                    return 0;
+            }
+
+            return 1;
+        }
+
+        private int dismiss()
+        {
+            return city.removeCitizen();
+        }
 
         public override void upkeep()
         {
