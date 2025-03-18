@@ -146,6 +146,7 @@ namespace Polis
             training_level -= 1;
             if(training_level <= 0) training_level = 0;
             processInvasion();
+            checkWinOrLoss();
             processBuildings();
             processUpkeep();
             gainResources();
@@ -153,7 +154,30 @@ namespace Polis
         
         private void processInvasion()
         {
+            if(invasion_counter > 0)
+            {
+                return;
+            }
 
+            // Invasion Start!
+            Console.WriteLine("A force of {0} soldiers with a training level of {1} has invaded our city! Our {2} soldiers march out to meet them in battle!", invasion_number, invasion_level, soldiers);
+
+            // Resolve Battle
+            int cityPower = (soldiers/training_level) + randomGenerator.Next(0, citizen[0].getSkill()/2);
+            int invasionPower = (invasion_number/invasion_level) + randomGenerator.Next(0, invasion_level/10);
+            if(cityPower >= invasionPower)
+            {
+                soldiers -= cityPower * 10;
+                if(soldiers <= 0) soldiers = 10;
+                Console.WriteLine("Our soldiers have successfully repelled the invasion! But we lost soldiers and only have {0} left...", soldiers);
+            }
+            else
+            {
+                grain = 0;
+                gold = 0;
+                population = 0;
+                Console.WriteLine("We've failed to repel the invasion, and they pillage and kill our citizens. Everything is burning. They march to us now to take your head...");
+            }
         }
 
         private void processBuildings()

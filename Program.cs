@@ -58,13 +58,11 @@
 
         if(city.isWin())
         {
-            Console.Clear();
             Console.WriteLine("Congratulations, King " + king_name + "! Your polis has become prosperous!");
             city.displayState();
         }
         else
         {
-            Console.Clear();
             Console.WriteLine("Your people have all met their demise and your polis is left in ruin, you have become forgotten and lost in the annals of history...");
         }
     }
