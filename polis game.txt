@@ -41,10 +41,10 @@ ABSTRACT BUILDING CLASS:
 - removeBuilding()
 
 STOA CLASS INHERITS BUILDING CLASS:
-- process() - increase energy regain
+- process() - get between 10 to 100 new population every turn
 
 MILITARY ACADEMY CLASS INHERITS BUILDING CLASS:
-- process() - double the max training level
+- process() - get between 10 to 20 new soldier every turn
 
 SHEEP FARM CLASS INHERITS BUILDING CLASS:
 - process() - gain gold each turn
@@ -103,8 +103,3 @@ GAME LOOP:
 TODO:
 - REFACTOR CODE BAD BAD BAD REPITITION AND SCATTERED AAAAAAAA PAIN
 - implement invasions and battle
-- implement developer command
-- implement stoa process
-- implement military academy process
-- implement sheep farm process
-- implement brewery process

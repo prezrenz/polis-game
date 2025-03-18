@@ -304,6 +304,18 @@ namespace Polis
     {
         public Developer(City _city) : base(_city, "Urban Developer", "build") { }
 
+        public override int processCommand()
+        {
+            if(city.isAtMaxBuildings())
+            {
+                Console.WriteLine("Can't build any more buildings, you already have 4.");
+                return 0;
+            }
+
+            return city.requestBuilding();
+        }
+        
+
         public override void upkeep()
         {
             city.increaseGold(-50);

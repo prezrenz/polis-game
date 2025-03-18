@@ -4,7 +4,7 @@ namespace Polis
 {
     public class City
     {
-        private Random randomGenerator = new Random();
+        public Random randomGenerator = new Random();
         private String king_name;
         private String city_name;
 
@@ -21,6 +21,7 @@ namespace Polis
         private int invasion_level;
 
         private List<Building> buildings; 
+        private BuildingFactory factory;
         private int max_buildings;
 
         private List<Citizen> citizen;
@@ -51,6 +52,7 @@ namespace Polis
             invasion_level = 20;
 
             buildings = new List<Building>();
+            factory = new BuildingFactory(this);
             max_buildings = 4; // should be const?
             citizen = new List<Citizen>();
             max_citizen = 10;
@@ -247,6 +249,16 @@ namespace Polis
             Console.WriteLine("You managed to draft " + amount + " soldiers.");
         }
 
+        public void increasePopulation(int amount)
+        {
+            population += amount;
+        }
+
+        public int getPopulation()
+        {
+            return population;
+        }
+
         public int getSoldiers()
         {
             return soldiers;
@@ -263,9 +275,20 @@ namespace Polis
             return land_level;
         }
 
-        public void addBuilding()
+        public void addBuilding(Building building)
         {
+            buildings.Add(building);
+        }
 
+        // why did i do this? the calls are all over the place... fix this later on
+        public int requestBuilding() 
+        {
+            return factory.requestBuilding();
+        }
+
+        public bool isAtMaxBuildings()
+        {
+            return buildings.Count() >= max_buildings;
         }
 
         public void addCitizen(String type)
@@ -345,7 +368,7 @@ namespace Polis
 
         public void checkWinOrLoss()
         {
-            if(population <= 0)
+            if(population <= 0 || (grain == 0 && gold == 0))
             {
                 lose = true;
                 gameEnd = true;
