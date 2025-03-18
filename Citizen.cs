@@ -100,6 +100,9 @@ namespace Polis
         }
     }
 
+// so it will stop complaining about the unused exception e which i handled already
+#pragma warning disable 0168
+
     public class Leader: Citizen
     {
         public Leader(City _city) : base(_city, "Leader", "hire or dismiss citizens") { }
@@ -252,14 +255,42 @@ namespace Polis
 
     public class Farmer: Citizen
     {
-       private int developPrice = 50;
-       public Farmer(City _city) : base(_city, "Farmer", "develop land for 50 gold") { }
+       public Farmer(City _city) : base(_city, "Farmer", "develop land") { }
 
        public override int processCommand()
        {
-           city.increaseLandLevel(randomGenerator.Next(10, getSkill()));
-           city.increaseGold(-developPrice);
-           return 1;
+           int developPrice = (city.getLandLevel()/4) * 5;
+           int choice;
+
+            Console.WriteLine("Press 1 to develop land for "+ developPrice +" gold.");
+            Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
+
+            try
+            { 
+                choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice == 1)
+                {
+                   if(city.getGold() < developPrice)
+                   {
+                       Console.WriteLine("Not enough gold to develop land!");
+                       return 0;
+                   }
+
+                   city.increaseLandLevel(randomGenerator.Next(10, getSkill()));
+                   city.increaseGold(-developPrice);
+                   return 1;
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 0;
+            }
        } 
 
        public override void upkeep()
@@ -282,6 +313,66 @@ namespace Polis
     public class Merchant: Citizen
     {
         public Merchant(City _city) : base(_city, "Merchant", "trade") { }
+
+        public override int processCommand()
+        {
+            int choice;
+
+            Console.WriteLine("Press 1 to sell 200 grain for 100 gold.");
+            Console.WriteLine("Press 2 to buy 200 grain for 150 gold.");
+            Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
+
+            try
+            { 
+                choice = Convert.ToInt32(Console.ReadLine());
+
+                if(choice == 1)
+                {
+                    return buy();
+                }
+                else if(choice == 2)
+                {
+                    return sell();
+                }
+                else
+                {
+                    return 0;
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine("Invalid input, please try again.");
+                return 0;
+            }
+        }
+
+        private int buy() // maybe i should insert amount
+        { // magic numbers bad move these to varibles
+            if(city.getGrain() < 200)
+            {
+                Console.WriteLine("Not enough grain to sell!");
+                return 0;
+            }
+
+            city.increaseGold(100);
+            city.increaseGrain(-200);
+            Console.WriteLine("You sold 200 grain for 100 gold.");
+            return 1;
+        }
+
+        private int sell() // maybe i should insert amount
+        {
+            if(city.getGold() < 150)
+            {
+                Console.WriteLine("Not enough gold to buy!");
+                return 0;
+            }
+
+            city.increaseGold(-150);
+            city.increaseGrain(200);
+            Console.WriteLine("You bought 200 grain for 150 gold.");
+            return 1;
+        }
 
         public override void upkeep()
         {

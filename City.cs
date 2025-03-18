@@ -1,7 +1,10 @@
 namespace Polis
+// so it will stop complaining about the unused exception e which i handled already
+#pragma warning disable 0168
 {
     public class City
     {
+        private Random randomGenerator = new Random();
         private String king_name;
         private String city_name;
 
@@ -178,18 +181,22 @@ namespace Polis
 
         private void gainResources()
         {
-            if(grain >= population * 1.5)
+            if(grain >= population)
             { 
                 population += land_level * 2;
                 Console.WriteLine("You gained " + (land_level * 2) + " population this turn.");
             }
 
+            int newArrivals = randomGenerator.Next(0, 100);
+            population += newArrivals; // passive population
+            Console.WriteLine(newArrivals + " new people have come to live to our polis.");
+
             if(grain <= 0)
             {
-                int loss = (int)((float)population * 0.10f);
+                int loss = (int)((float)population * 0.30f);
                 if(loss <= 0) loss = 10;
                 population -= loss;
-                Console.WriteLine("You lose " + loss + " population this turn.");
+                Console.WriteLine("You lost " + loss + " population this turn.");
             }
 
             grain += (land_level * 4) - (population/2) - (soldiers);
@@ -249,6 +256,11 @@ namespace Polis
         {
             land_level += amount;
             Console.WriteLine("You increased your land level by " + amount + ".");
+        }
+
+        public int getLandLevel()
+        {
+            return land_level;
         }
 
         public void addBuilding()

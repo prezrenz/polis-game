@@ -50,7 +50,7 @@ namespace Polis
                 case "brewery":
                     return brewery.clone();
                 default:
-                    return null; // ill just check errors later
+                    return new Building("ERROR", 0, () => Console.WriteLine("Building Error: should not be possible!")); // default error should be handled some other way instead of using Building like an Exception object
             }
         }
     }
