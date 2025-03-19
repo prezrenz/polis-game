@@ -81,6 +81,7 @@ namespace Polis
 
         public virtual int processCommand()
         {
+            Console.WriteLine("I will {0}!", actionText);
             return 0; // should be fine, it'll use the overriden method anyway... should
         }
 
@@ -102,6 +103,56 @@ namespace Polis
 
 // so it will stop complaining about the unused exception e which i handled already
 #pragma warning disable 0168
+
+    public class SpartanSoldier: Citizen // only used in showcase mode
+    {
+        private int combatSkill;
+        private SpartanSoldier opponent; // opponent will be set after instantiation
+        public SpartanSoldier(City _city, String _name, int _combatSkill): base(_city, _name, "Spartan Soldier", "bring down the fury of Ares")
+        {
+            combatSkill = _combatSkill;
+        }
+        public SpartanSoldier(City _city, int _combatSkill): base(_city, "Spartan Soldier", "bring down the fury of Ares")
+        {
+            combatSkill = _combatSkill;
+        }
+
+        public override int processCommand()
+        {
+            Console.WriteLine("{0}: I shall fight my opponent {1} with honor!", getName(), opponent.getName());
+            int thisRoll = randomGenerator.Next(1, 20) + (combatSkill/10); 
+            int opponentRoll = randomGenerator.Next(1, 20) + (combatSkill/10);
+
+            if(thisRoll > opponentRoll)
+            {
+                Console.WriteLine("{0}: I have bested {1} in single combat! Pathetic!", getName(), opponent.getName());
+                opponent.admitDefeat(getName());
+            }
+            else
+            {
+                opponent.gloat(getName());
+                admitDefeat(opponent.getName());
+            }
+
+            return 0;
+        }
+
+        public void setOpponent(SpartanSoldier _opponent)
+        {
+            opponent = _opponent;
+            Console.WriteLine("{0}: I will fight {1} next!", getName(), _opponent.getName());
+        }
+
+        public void gloat(String gloatTo)
+        {
+            Console.WriteLine("{0}: You are not a worthy spartan soldier, {1}!", getName(), gloatTo);
+        }
+
+        public void admitDefeat(String admitTo)
+        {
+            Console.WriteLine("{0}: I concede! {1} is truly a legendary warrior!", getName(), admitTo);
+        }
+    }
 
     public class Leader: Citizen
     {

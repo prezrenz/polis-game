@@ -88,6 +88,8 @@ namespace Polis
                                     buildings_list[choice-1].getPrice());
                 return 1;
             }
+// so it will stop complaining about the unused exception e which i handled already
+#pragma warning disable 0168
             catch(Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
