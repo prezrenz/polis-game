@@ -41,15 +41,15 @@ namespace Polis
             current_year = 0;
             population = 1000;
             grain = 500;
-            gold = 1000;
+            gold = 300;
             land_level = 10;
             soldiers = 100;
             training_level = 10;
 
             // initial invasion parameters
             invasion_counter = 5;
-            invasion_number = 200;
-            invasion_level = 20;
+            invasion_number = 100;
+            invasion_level = 10;
 
             buildings = new List<Building>();
             factory = new BuildingFactory(this);
@@ -62,7 +62,7 @@ namespace Polis
             win = false;
             lose = false;
             gameEnd = false;
-            requiredPop = 10000;
+            requiredPop = 2000;
         }
 
         public void displayState()
@@ -144,12 +144,12 @@ namespace Polis
             current_year += 1;
             invasion_counter -= 1; // the processInvasion will reset this counter
             training_level -= 1;
-            if(training_level <= 0) training_level = 0;
-            processInvasion();
-            checkWinOrLoss();
+            if(training_level <= 0) training_level = 1;
             processBuildings();
             processUpkeep();
             gainResources();
+            processInvasion();
+            checkWinOrLoss();
         }
         
         private void processInvasion()
@@ -163,13 +163,24 @@ namespace Polis
             Console.WriteLine("A force of {0} soldiers with a training level of {1} has invaded our city! Our {2} soldiers march out to meet them in battle!", invasion_number, invasion_level, soldiers);
 
             // Resolve Battle
-            int cityPower = (soldiers/training_level) + randomGenerator.Next(0, citizen[0].getSkill()/2);
-            int invasionPower = (invasion_number/invasion_level) + randomGenerator.Next(0, invasion_level/10);
+            int cityPower = (soldiers+(training_level/10)) + randomGenerator.Next(citizen[0].getSkill()/2, citizen[0].getSkill());
+            int invasionPower = (invasion_number+invasion_level) + randomGenerator.Next(invasion_level/10, invasion_level/10);
+            Console.WriteLine("{0}'s Army Power: {1} vs. Invader's Army Power: {2}",
+                                king_name, cityPower, invasionPower);
             if(cityPower >= invasionPower)
             {
-                soldiers -= cityPower * 10;
+                soldiers -= invasionPower/4;
+                land_level -= invasionPower/4;
+                if(land_level <= 0) land_level = 10;
                 if(soldiers <= 0) soldiers = 10;
-                Console.WriteLine("Our soldiers have successfully repelled the invasion! But we lost soldiers and only have {0} left...", soldiers);
+                Console.WriteLine("Our soldiers have successfully repelled the invasion! But they've destroyed our land, we lost soldiers and only have {0} left...", soldiers);
+    
+                // Set up next invasion
+                invasion_counter = 5;
+                invasion_level = invasion_level * 2;
+                invasion_number = invasion_number * 2;
+
+                Console.WriteLine("Scouts report an estimated force of {0} invaders with a training level of {1} is coming in {2} years.", invasion_number, invasion_level, invasion_counter);
             }
             else
             {
@@ -213,25 +224,25 @@ namespace Polis
                 Console.WriteLine("You gained " + (land_level * 2) + " population this turn.");
             }
 
-            int newArrivals = randomGenerator.Next(0, 100);
+            int newArrivals = randomGenerator.Next(0, 20);
             population += newArrivals; // passive population
             Console.WriteLine(newArrivals + " new people have come to live to our polis.");
 
             if(grain <= 0)
             {
-                int loss = (int)((float)population * 0.30f);
+                int loss = (int)((float)population * 0.20f);
                 if(loss <= 0) loss = 10;
                 population -= loss;
                 Console.WriteLine("You lost " + loss + " population this turn.");
             }
 
-            grain += (land_level * 4) - (population/2) - (soldiers);
-            Console.WriteLine("You gained " + ((land_level * 4) - (population/2) - (soldiers)) + " grain this turn.");
+            grain += (land_level * 6) - (population/2) - (soldiers);
+            Console.WriteLine("You gained " + ((land_level * 6) - (population/2) - (soldiers)) + " grain this turn.");
 
             if(grain < 0) grain = 0;
 
-            gold += (population/4) - (soldiers+(training_level/2)+1);
-            Console.WriteLine("You gained " + ((population/2) - (soldiers+(training_level/2)+1)) + " gold this turn.");
+            gold += (population/2) - (soldiers+(training_level/4)+1);
+            Console.WriteLine("You gained " + ((population/2) - (soldiers+(training_level/4)+1)) + " gold this turn.");
 
             if(gold < 0) gold = 0;
         }
@@ -305,9 +316,9 @@ namespace Polis
         }
 
         // why did i do this? the calls are all over the place... fix this later on
-        public int requestBuilding() 
+        public int requestBuilding(String callerName) 
         {
-            return factory.requestBuilding();
+            return factory.requestBuilding(callerName);
         }
 
         public bool isAtMaxBuildings()

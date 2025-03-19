@@ -52,7 +52,7 @@ namespace Polis
             Console.WriteLine("Your Brewery has earned {0} gold.", goldEarned);
         }
 
-        public int requestBuilding()
+        public int requestBuilding(String callerName)
         {
             int choice;
 
@@ -61,6 +61,7 @@ namespace Polis
                 Console.WriteLine("Press {0} to build a {1} for {2} gold.",
                                     i+1, buildings_list[i].getName(), buildings_list[i].getPrice());
             }
+            Console.WriteLine("Press 0 to cancel acting with " + callerName + ".");
 
             try
             { 

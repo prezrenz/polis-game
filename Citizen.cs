@@ -205,7 +205,7 @@ namespace Polis
         {                
             int choice;
 
-            Console.WriteLine("Press 1 to draft 50 to " + charisma + " soldiers for 100 gold.");
+            Console.WriteLine("Press 1 to draft 50 to " + (charisma+50) + " soldiers for 100 gold.");
             Console.WriteLine("Press 2 to increase your training level.");
             Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
 
@@ -312,7 +312,7 @@ namespace Polis
                 return 0;
             }
 
-            return city.requestBuilding();
+            return city.requestBuilding(getName());
         }
         
 
