@@ -56,46 +56,46 @@ namespace Polis
         {
             int choice;
 
-            for(int i = 0; i < buildings_list.Count(); i++)
+            for (int i = 0; i < buildings_list.Count(); i++)
             {
                 Console.WriteLine("Press {0} to build a {1} for {2} gold.",
-                                    i+1, buildings_list[i].getName(), buildings_list[i].getPrice());
+                                    i + 1, buildings_list[i].getName(), buildings_list[i].getPrice());
             }
             Console.WriteLine("Press 0 to cancel acting with " + callerName + ".");
 
             try
-            { 
+            {
                 choice = Convert.ToInt32(Console.ReadLine());
 
-                if(choice == 0)
+                if (choice == 0)
                 {
                     return 0;
                 }
-                else if(choice > buildings_list.Count())
+                else if (choice > buildings_list.Count())
                 {
                     throw new Exception();
                 }
 
-                if(buildings_list[choice-1].getPrice() > city.getGold())
+                if (buildings_list[choice - 1].getPrice() > city.getGold())
                 {
-                    Console.WriteLine("Not enough gold to build a {0}.", buildings_list[choice-1].getName());
+                    Console.WriteLine("Not enough gold to build a {0}.", buildings_list[choice - 1].getName());
                     return 0;
                 }
 
-                city.addBuilding(buildings_list[choice-1].clone());
-                city.increaseGold(-buildings_list[choice-1].getPrice());
-                Console.WriteLine("Built a {0} for {1} gold.", buildings_list[choice-1].getName(),
-                                    buildings_list[choice-1].getPrice());
+                city.addBuilding(buildings_list[choice - 1].clone());
+                city.increaseGold(-buildings_list[choice - 1].getPrice());
+                Console.WriteLine("Built a {0} for {1} gold.", buildings_list[choice - 1].getName(),
+                                    buildings_list[choice - 1].getPrice());
                 return 1;
             }
-// so it will stop complaining about the unused exception e which i handled already
+            // so it will stop complaining about the unused exception e which i handled already
 #pragma warning disable 0168
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
                 return 0;
             }
-        }    
+        }
     }
 
     public class Building

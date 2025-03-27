@@ -37,7 +37,6 @@ namespace Polis
             role = _role;
             actionText = _actionText;
         }
-        
         public Citizen(City _city, String _name, String _role, String _actionText)
         {
             randomGenerator = new Random();
@@ -101,18 +100,17 @@ namespace Polis
         }
     }
 
-// so it will stop complaining about the unused exception e which i handled already
+    // so it will stop complaining about the unused exception e which i handled already
 #pragma warning disable 0168
-
-    public class SpartanSoldier: Citizen // only used in showcase mode
+    public class SpartanSoldier : Citizen // only used in showcase mode
     {
         private int combatSkill;
         private SpartanSoldier opponent; // opponent will be set after instantiation
-        public SpartanSoldier(City _city, String _name, int _combatSkill): base(_city, _name, "Spartan Soldier", "bring down the fury of Ares")
+        public SpartanSoldier(City _city, String _name, int _combatSkill) : base(_city, _name, "Spartan Soldier", "bring down the fury of Ares")
         {
             combatSkill = _combatSkill;
         }
-        public SpartanSoldier(City _city, int _combatSkill): base(_city, "Spartan Soldier", "bring down the fury of Ares")
+        public SpartanSoldier(City _city, int _combatSkill) : base(_city, "Spartan Soldier", "bring down the fury of Ares")
         {
             combatSkill = _combatSkill;
         }
@@ -120,10 +118,10 @@ namespace Polis
         public override int processCommand()
         {
             Console.WriteLine("{0}: I shall fight my opponent {1} with honor!", getName(), opponent.getName());
-            int thisRoll = randomGenerator.Next(1, 20) + (combatSkill/10); 
-            int opponentRoll = randomGenerator.Next(1, 20) + (combatSkill/10);
+            int thisRoll = randomGenerator.Next(1, 20) + (combatSkill / 10);
+            int opponentRoll = randomGenerator.Next(1, 20) + (combatSkill / 10);
 
-            if(thisRoll > opponentRoll)
+            if (thisRoll > opponentRoll)
             {
                 Console.WriteLine("{0}: I have bested {1} in single combat! Pathetic!", getName(), opponent.getName());
                 opponent.admitDefeat(getName());
@@ -154,7 +152,7 @@ namespace Polis
         }
     }
 
-    public class Leader: Citizen
+    public class Leader : Citizen
     {
         public Leader(City _city) : base(_city, "Leader", "hire or dismiss citizens") { }
         public Leader(City _city, String _name) : base(_city, _name, "Leader", "hire or dismiss citizens") { }
@@ -168,14 +166,14 @@ namespace Polis
             Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
 
             try
-            { 
+            {
                 choice = Convert.ToInt32(Console.ReadLine());
 
-                if(choice == 1)
+                if (choice == 1)
                 {
                     return hire();
                 }
-                else if(choice == 2)
+                else if (choice == 2)
                 {
                     return dismiss();
                 }
@@ -184,7 +182,7 @@ namespace Polis
                     return 0;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
                 return 0;
@@ -195,19 +193,19 @@ namespace Polis
         {
             int hireNumber = randomGenerator.Next(1, 4);
 
-            if(city.getGold() < 100)
+            if (city.getGold() < 100)
             {
                 Console.WriteLine("Not enough to hire another citizen.");
                 return 0;
             }
 
-            if(city.isAtMaxCitizen())
+            if (city.isAtMaxCitizen())
             {
                 Console.WriteLine("You already have too many citizens!");
                 return 0;
             }
 
-            switch(hireNumber)
+            switch (hireNumber)
             {
                 case 1:
                     city.addCitizen("Commander");
@@ -241,7 +239,7 @@ namespace Polis
         }
     }
 
-    public class Commander: Citizen
+    public class Commander : Citizen
     {
         private int charisma;
         private int draftCost = 100;
@@ -253,22 +251,22 @@ namespace Polis
         }
 
         public override int processCommand()
-        {                
+        {
             int choice;
 
-            Console.WriteLine("Press 1 to draft 50 to " + (charisma+50) + " soldiers for 100 gold.");
+            Console.WriteLine("Press 1 to draft 50 to " + (charisma + 50) + " soldiers for 100 gold.");
             Console.WriteLine("Press 2 to increase your training level.");
             Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
 
             try
-            { 
+            {
                 choice = Convert.ToInt32(Console.ReadLine());
 
-                if(choice == 1)
+                if (choice == 1)
                 {
                     return draft();
                 }
-                else if(choice == 2)
+                else if (choice == 2)
                 {
                     return train();
                 }
@@ -277,16 +275,15 @@ namespace Polis
                     return 0;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
                 return 0;
             }
         }
-        
         private int draft()
         {
-            city.increaseSoldiers(randomGenerator.Next(10, this.charisma)+50);
+            city.increaseSoldiers(randomGenerator.Next(10, this.charisma) + 50);
             city.increaseGold(-draftCost);
             return 1;
         }
@@ -304,60 +301,60 @@ namespace Polis
 
     }
 
-    public class Farmer: Citizen
+    public class Farmer : Citizen
     {
-       public Farmer(City _city) : base(_city, "Farmer", "develop land") { }
+        public Farmer(City _city) : base(_city, "Farmer", "develop land") { }
 
-       public override int processCommand()
-       {
-           int developPrice = (city.getLandLevel()/4) * 5;
-           int choice;
+        public override int processCommand()
+        {
+            int developPrice = (city.getLandLevel() / 4) * 5;
+            int choice;
 
-            Console.WriteLine("Press 1 to develop land for "+ developPrice +" gold.");
+            Console.WriteLine("Press 1 to develop land for " + developPrice + " gold.");
             Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
 
             try
-            { 
+            {
                 choice = Convert.ToInt32(Console.ReadLine());
 
-                if(choice == 1)
+                if (choice == 1)
                 {
-                   if(city.getGold() < developPrice)
-                   {
-                       Console.WriteLine("Not enough gold to develop land!");
-                       return 0;
-                   }
+                    if (city.getGold() < developPrice)
+                    {
+                        Console.WriteLine("Not enough gold to develop land!");
+                        return 0;
+                    }
 
-                   city.increaseLandLevel(randomGenerator.Next(10, getSkill()));
-                   city.increaseGold(-developPrice);
-                   return 1;
+                    city.increaseLandLevel(randomGenerator.Next(10, getSkill()));
+                    city.increaseGold(-developPrice);
+                    return 1;
                 }
                 else
                 {
                     return 0;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
                 return 0;
             }
-       } 
+        }
 
-       public override void upkeep()
-       {
-           city.increaseGold(-20);
-       }
+        public override void upkeep()
+        {
+            city.increaseGold(-20);
+        }
 
     }
 
-    public class Developer: Citizen
+    public class Developer : Citizen
     {
         public Developer(City _city) : base(_city, "Urban Developer", "build") { }
 
         public override int processCommand()
         {
-            if(city.isAtMaxBuildings())
+            if (city.isAtMaxBuildings())
             {
                 Console.WriteLine("Can't build any more buildings, you already have 4.");
                 return 0;
@@ -365,7 +362,6 @@ namespace Polis
 
             return city.requestBuilding(getName());
         }
-        
 
         public override void upkeep()
         {
@@ -373,7 +369,7 @@ namespace Polis
         }
     }
 
-    public class Merchant: Citizen
+    public class Merchant : Citizen
     {
         public Merchant(City _city) : base(_city, "Merchant", "trade") { }
 
@@ -386,14 +382,14 @@ namespace Polis
             Console.WriteLine("Press 0 to cancel acting with " + getName() + ".");
 
             try
-            { 
+            {
                 choice = Convert.ToInt32(Console.ReadLine());
 
-                if(choice == 1)
+                if (choice == 1)
                 {
                     return buy();
                 }
-                else if(choice == 2)
+                else if (choice == 2)
                 {
                     return sell();
                 }
@@ -402,7 +398,7 @@ namespace Polis
                     return 0;
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 Console.WriteLine("Invalid input, please try again.");
                 return 0;
@@ -411,7 +407,7 @@ namespace Polis
 
         private int buy() // maybe i should insert amount
         { // magic numbers bad move these to varibles
-            if(city.getGrain() < 200)
+            if (city.getGrain() < 200)
             {
                 Console.WriteLine("Not enough grain to sell!");
                 return 0;
@@ -425,7 +421,7 @@ namespace Polis
 
         private int sell() // maybe i should insert amount
         {
-            if(city.getGold() < 150)
+            if (city.getGold() < 150)
             {
                 Console.WriteLine("Not enough gold to buy!");
                 return 0;
